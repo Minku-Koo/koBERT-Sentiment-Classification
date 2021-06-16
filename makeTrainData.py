@@ -18,9 +18,12 @@ def labeling(paths, filename):
     values = []
     # print(commentlist[:10])
     while count<100:
-        print( commentlist[count].replace("\n","") )
-        value = int(input(">>"))
-        values.append(value)
+        print( count,")" ,commentlist[count].replace("\n","") )
+        value = input(">>")
+        if value not in ['0', '1']: 
+            count += 1
+            continue
+        values.append( int(value))
         count += 1
 
     f = open(savepath+filename+"-train.tsv", "wt" ,  encoding='utf-8', newline='')
@@ -38,6 +41,7 @@ commentpath = "./json-okt-comment/"
 for tname in tlist:
     potal = "daum"
     for t in tname:
+        if t in ["daumafter1-dict-train", "daumbefore1-dict-train"]: continue
         labeling(commentpath, potal+t+"-dict")
 
     potal = "naver"
