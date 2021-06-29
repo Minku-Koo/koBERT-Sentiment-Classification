@@ -5,7 +5,7 @@ from matplotlib import font_manager, rc
 import matplotlib.pyplot as plt
 import json
 import math
-
+import numpy as np
 
 tlist = []
 for i in range(1,6): tlist.append(["before"+str(i),"after"+str(i)])
@@ -28,23 +28,15 @@ def append_dict(d1, d2): #딕셔너리 합치기
 # 댓글 수 카운트 count comment
 def calc_comment_avg(dict, tablename ):
     emotion=[] 
-    emotion_count = 0 # emotion count
-    emotion_sum = 0.0 # emotion sum
     for day in dict.keys():
         for art in dict[day].keys():
             if len(dict[day][art][1]) <1: continue
             emotion.extend([a for a in dict[day][art][1]])
-            emotion_count += len(dict[day][art][1])
-            emotion_sum += sum(dict[day][art][1])
     
-    mean = round(sum(emotion) / len(emotion) ,3) #평균 average
-    
-    vsum = 0.0
-    for x in emotion:
-        vsum = vsum + (x - mean) ** 2
-    var = round(vsum / len(emotion),3) # 분산
-    
-    std = round(math.sqrt(var),3) #표준편차
+    mean = np.mean(emotion)
+    var = np.var(emotion)
+    std = np.std(emotion)
+
     title = dictName[tablename[-1]] # title name
     filepath = "./graphs/averages/" # result graph save path
     with open(filepath +"statistics-history.txt","at",encoding="utf-8") as f:
@@ -61,7 +53,7 @@ def make_graph(tablename, x, y):
     rc('font', family=font_name)
     
     wid = 0.3
-    plt.ylim([0, 1])
+    #plt.ylim([0, 0.2])
     plt.title(tablename,fontsize=22)
     for i, v in enumerate([r for r in range(5)] ): # before value
         plt.text(v, y[i], y[i],    
@@ -79,7 +71,7 @@ def make_graph(tablename, x, y):
     
     plt.bar(range(len(y)), y, color='#F7BE81' , label="After"  ,width=0.3)
     plt.bar( [i-wid for i in range(len(x))] , x, color='#58ACFA' , label="Before" ,width=wid )
-    plt.ylim([0, 0.5]) 
+    plt.ylim([0, 0.2]) 
     plt.xlabel('Religion',fontsize=20)
     plt.ylabel('Emotion',fontsize=20)
     plt.xticks(rotation=1,fontsize=16)
