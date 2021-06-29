@@ -80,14 +80,14 @@ def make_graph_flow(tablename, x, y, x2, y2, fig):
                 
         else: month_list.append("")
 
-    plt.ylim([0.0, 1.02]) 
+    plt.ylim([0.0, 0.5]) 
     plt.xlabel('Date',fontsize=18)
     plt.ylabel('Emotion',fontsize=18)
     plt.xticks(rotation=6,fontsize=13)
     plt.yticks(fontsize=16)
     plt.xticks(range(0,len(month_list)), month_list)
     plt.legend()
-    plt.savefig("./graphs/sentiment-flow/"+tablename+'-graph-emotion-flow.png', dpi=400) 
+    plt.savefig("./graphs/sentiment-flow2/"+tablename+'-graph-emotion-flow.png', dpi=400) 
     return 0
     
 # json 파일 읽어서 자료구조 생성
