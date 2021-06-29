@@ -92,24 +92,23 @@ def build_model(train_data): # to make rnn model
       output_mode="int",
       output_sequence_length=max_len,
     )
-    dropout_val = 0.3
+    dropout_val = 0.4
     vectorize_layer.adapt(train_data.batch(64))
     model.add(vectorize_layer)
     model.add(layers.Embedding(max_tokens + 1, output_dim= 200))
     model.add(Flatten())
-    model.add( Dense(32, activation="relu") )
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
     # model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    model.add(Dropout(dropout_val))
-    model.add(Dense(32, activation="relu"))
-    model.add(Dropout(dropout_val))
-    model.add(Dense(32, activation="relu"))
-    model.add(Dropout(dropout_val))
-    model.add(Dense(32, activation="relu"))
-    model.add(Dropout(dropout_val))
-    model.add(Dense(32, activation="relu"))
-    model.add(Dropout(dropout_val))
-    model.add(Dense(32, activation="relu"))
-    model.add(Dropout(dropout_val))
+    
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    # model.add(Dense(32, activation="relu"))
+    # model.add(Dropout(dropout_val))
+    # model.add(Dense(32, activation="relu"))
+    # model.add(Dropout(dropout_val))
     
     # model.add(Dropout(dropout_val))
     # model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
@@ -134,7 +133,7 @@ rnn_model.compile( # rnn model compile
 
 # model training
 history = rnn_model.fit(x_train, y_train, 
-                   epochs = 10,  
+                   epochs = 3,  
                    batch_size = 64 , 
                    validation_data = (x_test, y_test) 
                    )
@@ -146,3 +145,8 @@ model_save_path = "./tf_model/" # model save path
 model_name ="rnn-model" #model save file name
 tf.saved_model.save(rnn_model, model_save_path+model_name)
 
+
+'''
+ loss: 0.1593 - accuracy: 0.9512 - val_loss: 0.4939 - val_accuracy: 0.8301
+
+'''
