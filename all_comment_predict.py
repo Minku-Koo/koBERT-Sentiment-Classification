@@ -20,10 +20,11 @@ for i in range(1,6):
     tlist.append(t+"before"+str(i))
 
 # load RNN model
-rnn_model = tf.keras.models.load_model("../comment_emotion_rnn-model/rnn_model", custom_objects={"TextVectorization":TextVectorization})
+rnn_model = tf.keras.models.load_model("./tf_model/rnn-model", custom_objects={"TextVectorization":TextVectorization})
 
-path = "../comment/json-okt-comment/" # comment  json file directory path
+path = "./json-okt-comment/" # comment  json file directory path
 for tablename in tlist:
+    if "daum" in tablename: continue
     with open(path+tablename+'-dict.json', encoding="utf-8") as json_file:
         data = json.load(json_file) # load json file
     
@@ -37,6 +38,6 @@ for tablename in tlist:
                     continue
                 emotion = float(rnn_model.predict([comment])) # predict comment sentiment
                 data[date][article][-1].append(round(emotion, 4)) # dictionary value append sentiment
-    result_path = "../comment-emotion-predict/" #  result save json path
+    result_path = "./predict-comment-tf/" #  result save json path
     with open(result_path+"finish-"+tablename+"-dict.json", "w", encoding="utf-8") as json_file:
         json.dump(data, json_file, indent="\t",ensure_ascii = False)
