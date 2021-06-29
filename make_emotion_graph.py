@@ -7,6 +7,8 @@ import json
 import numpy as np
 import math, csv
 
+dirname = "tf"
+
 tlist = [] # database table name
 for i in range(1,6):  tlist.append(["before"+str(i),"after"+str(i)])
 
@@ -24,16 +26,55 @@ def append_dict(d1, d2): # dictionary + dictionary
         else: d2[d] = d1[d]
     return d2
 
+# 종교별 총 평균 그래프
+# all average per religion graph
+def make_avg_graph(tablename, x, y):
+    global dirname
+    plt.figure(101, figsize=(16, 6))
+    font_name = font_manager.FontProperties(fname='./font/KoPubDotumMedium.ttf', size=20).get_name()
+    rc('font', family=font_name)
+    
+    wid = 0.3
+    #plt.ylim([0, 0.2])
+    plt.title(tablename,fontsize=22)
+    for i, v in enumerate([r for r in range(5)] ): # before value
+        plt.text(v, y[i], y[i],    
+             fontsize = 11, 
+             color='black',
+             horizontalalignment='center', 
+             verticalalignment='bottom')
+             
+    for i, v in enumerate([r for r in range(5)] ): #after value
+        plt.text(v-0.3, x[i], x[i],  
+             fontsize = 11, 
+             color='black',
+             horizontalalignment='center', 
+             verticalalignment='bottom')
+    
+    plt.bar(range(len(y)), y, color='#F7BE81' , label="After"  ,width=0.3)
+    plt.bar( [i-wid for i in range(len(x))] , x, color='#58ACFA' , label="Before" ,width=wid )
+    plt.ylim([0, 0.4]) 
+    plt.xlabel('Religion',fontsize=20)
+    plt.ylabel('Emotion',fontsize=20)
+    plt.xticks(rotation=1,fontsize=16)
+    plt.xticks([e-round(wid/2,2) for e in range(0,5)], [dictName[str(d)] for d in range(1,6)])
+    plt.yticks(fontsize=16)
+    plt.legend()
+    plt.savefig("./graphs/"+dirname+"/"+tablename+'-graph-avg-emotion.png', dpi=400) 
+    return 
+
+
 # csv 파일 생성
 def makeCSV(tablename, y):
-    f = open("./ttest/"+tablename+'.csv','w', newline='')
+    global dirname
+    f = open("./ttest/"+dirname+"/"+tablename+'.csv','w', newline='')
     wr = csv.writer(f)
     for e in y:
         wr.writerow([e])
 
 # 시간 흐름에 따른 감성 지수 그래프
 def make_graph_flow(tablename, x, y, x2, y2, fig):
-    
+    global dirname
     plt.figure(fig, figsize=(16, 5))
     font_name = font_manager.FontProperties(fname='./font/KoPubDotumMedium.ttf', size=20).get_name()
     rc('font', family=font_name)
@@ -80,14 +121,14 @@ def make_graph_flow(tablename, x, y, x2, y2, fig):
                 
         else: month_list.append("")
 
-    plt.ylim([0.0, 0.5]) 
+    plt.ylim([0.0, 0.7]) 
     plt.xlabel('Date',fontsize=18)
     plt.ylabel('Emotion',fontsize=18)
     plt.xticks(rotation=6,fontsize=13)
     plt.yticks(fontsize=16)
     plt.xticks(range(0,len(month_list)), month_list)
     plt.legend()
-    plt.savefig("./graphs/sentiment-flow2/"+tablename+'-graph-emotion-flow.png', dpi=400) 
+    plt.savefig("./graphs/"+dirname+"/"+tablename+'-graph-emotion-flow.png', dpi=400) 
     return 0
     
 # json 파일 읽어서 자료구조 생성
@@ -136,13 +177,18 @@ def makeValue(data):
     
     return x, y
 
+def calc_mean_std(data):
+    import numpy as np
+    return round(np.mean(data), 4), round(np.std(data), 4)
+
 
 fig = 0
+avg_x, avg_y = [], []
 for tableList in tlist:
     data = []
     for tablename in tableList:
         temp = {}
-        path = "./predict-comment/"
+        path = "./predict-comment-tf/"
         with open(path+"finish-daum"+tablename+'-dict.json', encoding="utf-8") as json_file:
             data1 = json.load(json_file)
         with open(path+"finish-naver"+tablename+'-dict.json', encoding="utf-8") as json_file:
@@ -153,8 +199,27 @@ for tableList in tlist:
     
     x, y = data[0][0], data[0][1]
     x2, y2 = data[1][0], data[1][1]
+
+    with open( "./graphs/"+dirname+"/stats.txt", "at", encoding="utf-8" ) as f:
+        title = dictName[tablename[-1]] 
+        f.write(title+"\n")
+        mean, std = calc_mean_std(y)
+        f.write("이전 avg: "+str(mean)+" std: "+str(std)+"\n")
+        avg_x.append(mean )
+
+        mean, std = calc_mean_std(y2)
+        f.write("이후 avg: "+str(mean)+" std: "+str(std)+"\n")
+        avg_y.append(mean )
+
+        f.write("--"*10+"\n")
+    
+        
+        
     make_graph_flow(tablename, x, y, x2, y2, fig)
+    
     makeCSV(tableList[0], y)
     makeCSV(tableList[1], y2)
 
     fig+=2
+
+make_avg_graph("종교별 평균 감성 지수", avg_x, avg_y )
