@@ -43,12 +43,11 @@ def showModelTrain(history):
 
 #   csv 파일 읽어서 x y 리스트 저장
 # read csv and make list
+
+# 수작업 데이터
 x, y = [],[]
 path = "./train-data/humanInspection/"
 filename = "dataset.tsv" # train data 
-
-
-
 with open(path +filename, "rt", encoding="utf-8") as f:
     for l in f.readlines():
         line = l.strip("\n")
@@ -58,6 +57,7 @@ with open(path +filename, "rt", encoding="utf-8") as f:
         x.append(data)
         y.append(value)
 
+# 네이버 영화 리뷰 데이터
 filename2 = "naver-ratings.csv"
 x2, y2 = [],[]
 f = open(path +filename2, 'rt', encoding='utf-8') #
@@ -74,6 +74,7 @@ test_percent = 0.3 # test data percent
 # make train and test data usin train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_percent)
 
+# 네이버 영화 데이터 추가
 a,b,c,d =  train_test_split(x2, y2, test_size=test_percent)
 x_train += a
 x_test += b
@@ -97,29 +98,14 @@ def build_model(train_data): # to make rnn model
     model.add(vectorize_layer)
     model.add(layers.Embedding(max_tokens + 1, output_dim= 200))
     model.add(Flatten())
+
     model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    # model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
     
-    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    # model.add(Dense(32, activation="relu"))
-    # model.add(Dropout(dropout_val))
-    # model.add(Dense(32, activation="relu"))
-    # model.add(Dropout(dropout_val))
-    
-    # model.add(Dropout(dropout_val))
-    # model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    # model.add(Dropout(dropout_val))
-    # model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    # model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    # model.add(Dropout(dropout_val))
-    # model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    # model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
-    # model.add(Dropout(dropout_val))
-    # model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
     model.add(Dense(8, activation="relu"))
     model.add(Dense(1, activation="sigmoid"))
     return model
