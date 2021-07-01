@@ -22,8 +22,9 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 import matplotlib.pyplot as plt
 
+# 훈련 결과 그래프 시각화
 def showModelTrain(history):
-    # 6 훈련 과정 시각화 (정확도)
+    # 훈련 과정 시각화 (acc)
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
     plt.title('Model accuracy')
@@ -32,7 +33,7 @@ def showModelTrain(history):
     plt.legend(['Train', 'Test'], loc='upper left')
     plt.show()
 
-    # 7 훈련 과정 시각화 (손실)
+    # 훈련 과정 시각화 (loss)
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
     plt.title('Model loss')
@@ -88,17 +89,19 @@ def build_model(train_data): # to make rnn model
     model.add(Input(shape=(1,), dtype="string")) # input one string data (comment)
     max_tokens = 100000 # dictionary size
     max_len = 64 # comment to vectorize size
+    
     vectorize_layer = TextVectorization( # make textvectorization 
       max_tokens=max_tokens,
       output_mode="int",
       output_sequence_length=max_len,
     )
-    dropout_val = 0.4
+    dropout_val = 0.4 # dropout percent
     vectorize_layer.adapt(train_data.batch(64))
     model.add(vectorize_layer)
     model.add(layers.Embedding(max_tokens + 1, output_dim= 200))
     model.add(Flatten())
 
+    # apply l2 regularizer
     model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
     model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
     model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
@@ -133,6 +136,6 @@ tf.saved_model.save(rnn_model, model_save_path+model_name)
 
 
 '''
- loss: 0.1593 - accuracy: 0.9512 - val_loss: 0.4939 - val_accuracy: 0.8301
-
+# deep learning model train result
+# loss: 0.1593 - accuracy: 0.9512 - val_loss: 0.4939 - val_accuracy: 0.8301
 '''
