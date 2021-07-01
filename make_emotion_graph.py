@@ -3,9 +3,8 @@
 
 from matplotlib import font_manager, rc
 import matplotlib.pyplot as plt
-import json
 import numpy as np
-import math, csv
+import math, csv, json
 
 dirname = "tf"
 
@@ -200,6 +199,7 @@ for tableList in tlist:
     x, y = data[0][0], data[0][1]
     x2, y2 = data[1][0], data[1][1]
 
+    # 감성 평균, 표준편차 text 파일 생성
     with open( "./graphs/"+dirname+"/stats.txt", "at", encoding="utf-8" ) as f:
         title = dictName[tablename[-1]] 
         f.write(title+"\n")
