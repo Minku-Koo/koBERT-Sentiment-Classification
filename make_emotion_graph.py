@@ -6,17 +6,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math, csv, json
 
-dirname = "tf"
+dirname = "kobert"
 
 tlist = [] # database table name
 for i in range(1,6):  tlist.append(["before"+str(i),"after"+str(i)])
 
 dictName = { # table index and name
-        "1":"신천지",
-        "2":"기독교",
-        "3":"천주교",
-        "4":"불교",
-        "5":"종교" }
+        "1":"Sincheongji",
+        "2":"Christianity",
+        "3":"Catholicism",
+        "4":"Buddhism",
+        "5":"Religion" }
         
 def append_dict(d1, d2): # dictionary + dictionary
     for d in d1.keys():
@@ -52,7 +52,7 @@ def make_avg_graph(tablename, x, y):
     
     plt.bar(range(len(y)), y, color='#F7BE81' , label="After"  ,width=0.3)
     plt.bar( [i-wid for i in range(len(x))] , x, color='#58ACFA' , label="Before" ,width=wid )
-    plt.ylim([0, 0.4]) 
+    plt.ylim([0, 0.2]) 
     plt.xlabel('Religion',fontsize=20)
     plt.ylabel('Emotion',fontsize=20)
     plt.xticks(rotation=1,fontsize=16)
@@ -120,7 +120,7 @@ def make_graph_flow(tablename, x, y, x2, y2, fig):
                 
         else: month_list.append("")
 
-    plt.ylim([0.0, 0.7]) 
+    plt.ylim([0.0, 0.5]) 
     plt.xlabel('Date',fontsize=18)
     plt.ylabel('Emotion',fontsize=18)
     plt.xticks(rotation=6,fontsize=13)
@@ -187,7 +187,7 @@ for tableList in tlist:
     data = []
     for tablename in tableList:
         temp = {}
-        path = "./predict-comment-tf/"
+        path = "./predict-comment/"
         with open(path+"finish-daum"+tablename+'-dict.json', encoding="utf-8") as json_file:
             data1 = json.load(json_file)
         with open(path+"finish-naver"+tablename+'-dict.json', encoding="utf-8") as json_file:
@@ -222,4 +222,4 @@ for tableList in tlist:
 
     fig+=2
 
-make_avg_graph("종교별 평균 감성 지수", avg_x, avg_y )
+make_avg_graph("Mean Sentimental value by Religion", avg_x, avg_y )
