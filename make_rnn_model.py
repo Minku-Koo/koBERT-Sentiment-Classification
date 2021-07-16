@@ -95,7 +95,7 @@ def build_model(train_data): # to make rnn model
       output_mode="int",
       output_sequence_length=max_len,
     )
-    dropout_val = 0.4 # dropout percent
+    #dropout_val = 0.4 # dropout percent
     vectorize_layer.adapt(train_data.batch(64))
     model.add(vectorize_layer)
     model.add(layers.Embedding(max_tokens + 1, output_dim= 200))
@@ -108,8 +108,9 @@ def build_model(train_data): # to make rnn model
     model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
     model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
     model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
+    model.add(Dense(32, activation="relu", kernel_regularizer= regularizers.l2(0.001)))
     
-    model.add(Dense(8, activation="relu"))
+    model.add(Dense(32, activation="relu"))
     model.add(Dense(1, activation="sigmoid"))
     return model
 
